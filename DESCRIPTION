@@ -1,0 +1,21 @@
+Package: StatsTools
+Title: Tools For Statistical Inference And Prediction
+Version: 0.1.0
+Authors@R: 
+    person(given = "Marc",
+           family = "Radke",
+           role = c("aut", "cre"),
+           email = "mrradke@gmail.com")
+Description: Contains functions for statistical inference and prediction. Includes a t-test, linear model, and cross-validation functions for k-nearest-neighbors and random forest.
+License: GPL (>= 3)
+Encoding: UTF-8
+LazyData: true
+Roxygen: list(markdown = TRUE)
+RoxygenNote: 7.1.1
+Imports: 
+    magrittr,
+    class,
+    dplyr,
+    randomForest,
+    palmerpenguins,
+    stats
