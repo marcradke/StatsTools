@@ -43,7 +43,6 @@ knitr::opts_chunk$set(
 
 ```{r setup, echo = FALSE}
 library(StatsTools)
-library(kableExtra)
 ```
 
 ## Introduction
@@ -115,7 +114,6 @@ An estimate of 0.00045 for the coefficient of `gdpPercap` means that, all other 
 
 ```{r}
 actual <- my_gapminder$lifeExp
-fitted <- 
 ```
 
 

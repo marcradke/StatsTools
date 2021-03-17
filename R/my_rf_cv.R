@@ -10,6 +10,7 @@
 #' @return A numeric with the cross-validation error.
 #'
 #' @importFrom tidyr drop_na
+#' @importFrom randomForest randomForest
 #'
 #' @examples
 #' my_rf_cv(5)
