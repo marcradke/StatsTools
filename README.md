@@ -3,6 +3,7 @@
 
 <!-- badges: start -->
 [![R-CMD-check](https://github.com/marcradke/StatsTools/workflows/R-CMD-check/badge.svg)](https://github.com/marcradke/StatsTools/actions)
+[![codecov](https://codecov.io/gh/marcradke/StatsTools/branch/master/graph/badge.svg?token=USNB56P45B)](https://codecov.io/gh/marcradke/StatsTools)
 <!-- badges: end -->
 
 The goal of StatsTools is to ...
