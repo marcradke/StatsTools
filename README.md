@@ -6,22 +6,27 @@
 [![codecov](https://codecov.io/gh/marcradke/StatsTools/branch/master/graph/badge.svg?token=USNB56P45B)](https://codecov.io/gh/marcradke/StatsTools)
 <!-- badges: end -->
 
-The goal of StatsTools is to ...
+StatsTools is a package of functions written as part of the STAT302 class at the University of Washington.
 
 ## Installation
 
-You can install the released version of StatsTools from [CRAN](https://CRAN.R-project.org) with:
+You can install the StatsTools from Github with:
 
 ``` r
-install.packages("StatsTools")
-```
-
-## Example
-
-This is a basic example which shows you how to solve a common problem:
-
-``` r
+# install.packages("devtools")
+devtools::install_github("marcradke/StatsTools"
 library(StatsTools)
-## basic example code
 ```
 
+## Use 
+
+For an overview of all functions in the package, view the vignette 
+
+``` r
+devtools::install_github("marcradke/StatsTools", build_vignette = TRUE, build_opts = c())
+library(StatsTools)
+# Use this to view the vignette in the StatsTools HTML help
+help(package = "StatsTools", help_type = "html")
+# Use this to view the vignette as an isolated HTML file
+utils::browseVignettes(package = "StatsTools")
+```
