@@ -1,12 +1,38 @@
 ---
 title: "Project 3: StatsTools Tutorial"
 author: "Marc R Radke"
+date: "18 March 2021"
 output: rmarkdown::html_vignette
 vignette: >
   %\VignetteIndexEntry{StatsTools Tutorial}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---
+
+<!--- Begin styling code. --->
+
+```{=html}
+<style type="text/css">
+/* Whole document: */
+body{
+  font-family: Cambria, Georgia, Palatino, serif;
+  font-size: 14pt;
+}
+h1.title {
+  font-size: 38px;
+  text-align: center;
+}
+h4.author {
+  font-size: 18px;
+  text-align: center;
+}
+h4.date {
+  font-size: 18px;
+  text-align: center;
+}
+</style>
+```
+<!--- End styling code. --->
 
 ```{r, include = FALSE}
 knitr::opts_chunk$set(
@@ -15,6 +41,84 @@ knitr::opts_chunk$set(
 )
 ```
 
-```{r setup}
+```{r setup, echo = FALSE}
+library(StatsTools)
+library(kableExtra)
+```
+
+## Introduction
+
+StatsTools is a package of statistics functions written as part of the STAT302 class at the University of Washington. It includes a t-test, a linear model, an implementation and cross-validation of the k-nearest neighbor algorithm, and cross-validation of a random forest algorithm applied to the `palmerpenguins` data.
+
+You can install from Github and load StatsTools with:
+
+```{r, eval = FALSE}
+# install.packages("devtools")
+devtools::install_github("marcradke/StatsTools")
 library(StatsTools)
 ```
+
+## `my_t.test`
+
+We will use the `lifeExp` data from `my_gapminder` to demonstrate the t-test function.
+
+First, we will test the hypothesis 
+  \begin{align}
+  H_0: \mu &= 60,\\
+  H_a: \mu &\neq 60.
+  \end{align}
+
+```{r}
+# Load my_gapminder data
+data(my_gapminder)
+# Call function with default alternative setting
+my_t.test(my_gapminder$lifeExp, mu = 60)
+```
+
+Using a p-value cut-off of $\alpha = 0.05$, we fail to reject the null hypothesis that the true mean life expectancy is 60 and find no evidence to support the alternative hypothesis that the true mean life expectancy is not equal to 60.
+
+Next, we will test the hypothesis 
+  \begin{align}
+  H_0: \mu &= 60,\\
+  H_a: \mu &< 60.
+  \end{align}
+
+```{r}
+my_t.test(my_gapminder$lifeExp, alternative = "less", mu = 60)
+```
+
+Again using $\alpha = 0.05$, here we are able to reject the null hypothesis and find that the data support our alternative hypothesis: that the true life expectancy is less than 60.
+
+Finally, we will test the hypothesis 
+  \begin{align}
+  H_0: \mu &= 60,\\
+  H_a: \mu &> 60.
+  \end{align}
+
+```{r}
+my_t.test(my_gapminder$lifeExp, alternative = "greater", mu = 60)
+```
+
+With $\alpha = 0.05$, we fail to reject our null hypothesis and find no evidence to support the alternative hypothesis that the true mean life expectancy is greater than 60.
+
+## `my_lm`
+
+To demonstrate the linear model function, we will again use data from `my_gapminder` and fit a linear model of the form `lifeExp ~ gdpPercap + continent`.
+
+```{r, warning = FALSE}
+# Fit linear model
+gap_lm <- my_lm(lifeExp ~ gdpPercap + continent, data = my_gapminder)
+gap_lm
+```
+
+An estimate of 0.00045 for the coefficient of `gdpPercap` means that, all other covariate being equal, a change of one unit in `gdpPercap` would change `lifeExp` by 0.00045. The table also gives us output of a hypothesis test with null hypothesis that the coefficient of `gdpPercap` is equal to zero and the alternativee hypothesis that it is not equal to zero. Using a p-value cutoff of $\alpha = 0.05$, we reject the null hypothesis and find evidence that the coefficient is not zero.
+
+```{r}
+actual <- my_gapminder$lifeExp
+fitted <- 
+```
+
+
+## `my_knn_cv`
+
+## `my_rf_cv`

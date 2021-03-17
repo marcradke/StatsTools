@@ -1,26 +1,26 @@
-
 # StatsTools
 
 <!-- badges: start -->
-[![R-CMD-check](https://github.com/marcradke/StatsTools/workflows/R-CMD-check/badge.svg)](https://github.com/marcradke/StatsTools/actions)
-[![codecov](https://codecov.io/gh/marcradke/StatsTools/branch/master/graph/badge.svg?token=USNB56P45B)](https://codecov.io/gh/marcradke/StatsTools)
+
+[![R-CMD-check](https://github.com/marcradke/StatsTools/workflows/R-CMD-check/badge.svg)](https://github.com/marcradke/StatsTools/actions) [![codecov](https://codecov.io/gh/marcradke/StatsTools/branch/master/graph/badge.svg?token=USNB56P45B)](https://codecov.io/gh/marcradke/StatsTools)
+
 <!-- badges: end -->
 
-StatsTools is a package of functions written as part of the STAT302 class at the University of Washington.
+StatsTools is a package of statistics functions written as part of the STAT302 class at the University of Washington.
 
 ## Installation
 
-You can install the StatsTools from Github with:
+You can install StatsTools from Github with:
 
 ``` r
 # install.packages("devtools")
-devtools::install_github("marcradke/StatsTools"
+devtools::install_github("marcradke/StatsTools")
 library(StatsTools)
 ```
 
-## Use 
+## Use
 
-For an overview of all functions in the package, view the vignette 
+For an overview of all functions in the package, create and view the vignette with:
 
 ``` r
 devtools::install_github("marcradke/StatsTools", build_vignette = TRUE, build_opts = c())
