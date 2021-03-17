@@ -9,14 +9,15 @@
 #' @keywords inference prediction
 #' @return A numeric with the cross-validation error.
 #'
+#' @importFrom tidyr drop_na
+#'
 #' @examples
 #' my_rf_cv(5)
 #'
 #' @export
 my_rf_cv <- function(k){
   # Trim penguins dataset to only variables we want
-  pen <- palmerpenguins::penguins[,3:6] %>%
-    dplyr::filter(!is.na(palmerpenguins::penguins$bill_length_mm))
+  pen <- StatsTools::my_penguins[,3:6] %>% tidyr::drop_na()
   # Create vector to split data into k random parts
   set.seed(303)
   folds <- sample(rep(1:k, length = nrow(pen)))

@@ -12,23 +12,24 @@
 #' @return List including a vector of class predictions for all observations and
 #'   a numeric with the cross-validation misclassification error.
 #'
+#' @importFrom tidyr drop_na
+#'
 #' @examples
-#' train <- Puromycin[,1:2]
-#' cl <- Puromycin[,3]
-#' my_knn_cv(train, cl, 2, 5)
+#' penguins <- my_penguins %>% tidyr::drop_na()
+#' train <- penguins[,3:6]
+#' cl <- penguins[,1]
+#' my_knn_cv(train, cl, 1, 5)
 #'
 #' @export
 my_knn_cv <- function(train, cl, k_nn, k_cv){
   # Create vector to split data into k random parts
+  #browser()
   set.seed(303)
   folds <- sample(rep(1:k_cv, length = nrow(train)))
   # Add vector to data
   train$folds <- folds
+  cl <- as.data.frame(cl)
   cl$folds <- folds
-  # Change cl to dataframe
-  cl <- data.frame(cl)
-  # Create empty prediction vector
-  pred <- c()
   # Create empty misclassification vector
   misclass <- rep(NA, 5)
   # Iterate over k_cv folds to cross-validate knn model
@@ -43,11 +44,11 @@ my_knn_cv <- function(train, cl, k_nn, k_cv){
     cl_test <- cl %>% dplyr::filter(folds == i) %>% dplyr::pull(-folds)
     # Predict class of test data
     knn_predict <- class::knn(data_train, data_test, cl_train, k = k_nn)
-    # Add predictions for this fold to full prediction matrix
-    pred[folds == i] <- as.character(knn_predict)
     # Calculate the misclassification rate of knn
     misclass[i] <- 1 - mean(knn_predict == cl_test)
   }
+  # Train on full data
+  pred <- class::knn(train, train, cl[,1], k = k_nn)
   # Create list with results and return
   result <- list("class" = pred,
                  "cv_err" = mean(misclass))

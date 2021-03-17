@@ -24,9 +24,10 @@ Predicts the class of the input data using k-nearest-neighbors and performs
 cross-validation to determine the misclassification error of the model.
 }
 \examples{
-train <- Puromycin[,1:2]
-cl <- Puromycin[,3]
-my_knn_cv(train, cl, 2, 5)
+penguins <- my_penguins \%>\% tidyr::drop_na()
+train <- penguins[,3:6]
+cl <- penguins[,1]
+my_knn_cv(train, cl, 1, 5)
 
 }
 \keyword{inference}
