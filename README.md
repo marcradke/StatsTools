@@ -30,3 +30,5 @@ help(package = "StatsTools", help_type = "html")
 # Use this to view the vignette as an isolated HTML file
 utils::browseVignettes(package = "StatsTools")
 ```
+
+test line from local clone
