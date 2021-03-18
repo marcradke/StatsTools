@@ -17,7 +17,6 @@ Imports:
     class,
     dplyr,
     randomForest,
-    palmerpenguins,
     stats,
     tidyr,
     ggplot2,

@@ -59,7 +59,7 @@ library(StatsTools)
 
 ## `my_t.test`
 
-We will use the `lifeExp` data from `gapminder` to demonstrate the t-test function.
+To demonstrate the t-test function, we will use the `lifeExp` data from `gapminder`.
 
 First, we will test the hypothesis 
   \begin{align}
@@ -128,14 +128,14 @@ avsf <- data.frame("fitted" = fitted,
                    "actual" = actual)
 # Plot Actual vs. Fitted
 avsfPlot <- ggplot(data = avsf, aes(y = actual, x = fitted)) +
-  geom_point(size = .9) +
-  geom_abline(slope = 1, intercept = 0, lty = 2) + 
+  geom_point(size = .9, color = "#ff6961") +
+  geom_abline(slope = 1, intercept = 0, lty = 2, color = "white") + 
   labs(title = "Actual vs. Fitted",
        y = "Actual",
        x = "Fitted") +
   ylim(20, 85) +
   xlim(20,110) +
-  #theme_gray(base_size = 14) +
+  theme_dark() +
   theme(plot.title = element_text(hjust = 0.5), 
         plot.margin = margin(0.5, 1, 0.5, 0.5, "cm"))
 avsfPlot
@@ -146,7 +146,7 @@ For a well-fit model, we would expect points around the line `y = x`. Our model 
 
 ## `my_knn_cv`
 
-To demonstrate the k-nearest neighbors package, we will use data from `my_penguins` and predict `species` using `bill_length_mm`, `bill_depth_mm`, `flipper_length_mm`, and `body_mass_g`. We will use 5-fold cross-validation and iterate from 1 to 10 k-nearest neighbors.
+To demonstrate the k-nearest neighbors cross-validation function, we will use data from `my_penguins` and predict `species` using `bill_length_mm`, `bill_depth_mm`, `flipper_length_mm`, and `body_mass_g`. We will use 5-fold cross-validation and iterate from 1 to 10 k-nearest neighbors.
 
 ```{r}
 # Load the my_penguins data
@@ -178,3 +178,57 @@ kableExtra::kable_styling(kableExtra::kable(outpt))
 Both the training and CV mis-classification error are minimized where `k_nn = 1`, and based solely on these metrics, a model where `k_nn = 1` would be chosen. However, such a model would predict the class of test data based solely on their proximity to single datapoints in the training data, rather than trying to detect some trend in the sample space. In practice, a model where `k_nn = 9` would be the best of these 10 because it has the next-lowest CV mis-classification error.
 
 ## `my_rf_cv`
+
+To demonstrate the random forest cross-validation function, we will again use the `my_penguins` data. We will predict `body_mass_g` using  `bill_length_mm`, `bill_depth_mm`, and `flipper_length_mm` and iterate through `k = 2`, `k = 5`, and `k = 10` (where `k` is the number of folds in our cross-validation) 30 times each to analyze the spread of the average MSE (mean squared error) .
+
+```{r, cache = TRUE}
+reps <- 30
+k_vals <- c(2, 5, 10)
+# Create empty output dataframe
+out <- data.frame("k" = rep(NA, reps * length(k_vals)),
+                  "mse" = rep(NA, reps * length(k_vals)))
+
+# Iterate through each k and each repetition and record the MSE
+start <- 0
+for (k in k_vals) {
+  for (i in 1:reps) {
+    out[start + i, 1] <- paste0("k_",k)
+    out[start + i, 2] <- my_rf_cv(k)
+  }
+start <- start + reps
+}
+```
+
+Next, we'll plot the MSE for each `k` and summarize the data:
+
+```{r, fig.width = 7, fig.height = 5, fig.align = "center"}
+# Make k column a factor and relevel
+out$k <- factor(out$k, levels = c("k_2", "k_5", "k_10"))
+
+# Create boxplots for each value of k
+rf_plot <- ggplot(data = out, aes(y = mse, x = k)) +
+  geom_boxplot(fill = "#ff6961") +
+  scale_x_discrete(labels = c(2, 5, 10)) +
+  labs(title = "Mean Squared Error For Each k",
+       y = "MSE") +
+  theme_dark() +
+  theme(plot.title = element_text(hjust = 0.5), 
+        plot.margin = margin(0.5, 1, 0.5, 0.5, "cm"))
+rf_plot
+```
+
+```{r}
+# Group by k and summarize: mean and sd
+summary <- out %>%
+  # Change k value strings to numbers so table looks nicer
+  dplyr::mutate(k = rep(c(2,5,10), each = 30)) %>%
+  dplyr::group_by(k) %>%
+  dplyr::summarize(mse_mean = mean(mse),
+            mse_sd = sd(mse))
+# assign colnames for printing
+colnames(summary) <- c("k", "Mean MSE", "SD MSE")
+# Format and print table
+kableExtra::kable_styling(kableExtra::kable(summary))
+```
+
+As `k` increases, the mean and standard deviation of the MSE tends to decrease, possibly because more folds means that more training data is used to fit the model each time.

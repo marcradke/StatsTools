@@ -20,7 +20,6 @@ my_rf_cv <- function(k){
   # Trim penguins dataset to only variables we want
   pen <- StatsTools::my_penguins[,3:6] %>% tidyr::drop_na()
   # Create vector to split data into k random parts
-  set.seed(303)
   folds <- sample(rep(1:k, length = nrow(pen)))
   # Add vector to data
   pen$folds <- folds
