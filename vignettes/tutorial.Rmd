@@ -4,7 +4,7 @@ author: "Marc R Radke"
 date: "18 March 2021"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{StatsTools Tutorial}
+  %\VignetteIndexEntry{Project 3: StatsTools Tutorial}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---
@@ -112,11 +112,41 @@ gap_lm
 
 An estimate of 0.00045 for the coefficient of `gdpPercap` means that, all other covariate being equal, a change of one unit in `gdpPercap` would change `lifeExp` by 0.00045. The table also gives us output of a hypothesis test with null hypothesis that the coefficient of `gdpPercap` is equal to zero and the alternativee hypothesis that it is not equal to zero. Using a p-value cutoff of $\alpha = 0.05$, we reject the null hypothesis and find evidence that the coefficient is not zero.
 
-```{r}
+We can plot the actual and fitted values of `gdpPercap` to get a sense of our model fit:
+
+```{r, fig.width = 7, fig.height = 5, fig.align = "center"}
+library(ggplot2)
+# Get actual values
 actual <- my_gapminder$lifeExp
+# Extract model matrix X from linear model
+X <- stats::model.matrix(lifeExp ~ gdpPercap + continent, data = my_gapminder)
+# Create vector of fitted values (Y-hat) by matrix-multiplying X by estimates
+# of the coefficients (beta)
+fitted <- X %*% as.matrix(gap_lm$Estimate)
+# Combine into dataframe
+avsf <- data.frame("fitted" = fitted,
+                   "actual" = actual)
+# Plot Actual vs. Fitted
+avsfPlot <- ggplot(data = avsf, aes(y = actual, x = fitted)) +
+  geom_point(size = .75) +
+  geom_abline(slope = 1, intercept = 0, lty = 2) + 
+  labs(title = "Actual vs. Fitted",
+       y = "Actual",
+       x = "Fitted") +
+  ylim(20, 85) +
+  xlim(20,110) +
+  theme_gray(base_size = 14) +
+  theme(plot.title = element_text(hjust = 0.5), 
+        plot.margin = margin(0.5, 1, 0.5, 0.5, "cm"))
+avsfPlot
+
 ```
 
+For a well-fit model, we would expect points around the line `y = x`. Our model appears to be a decent fit for values above ~ 70, but very poor otherwise.
 
 ## `my_knn_cv`
+
+
+
 
 ## `my_rf_cv`
