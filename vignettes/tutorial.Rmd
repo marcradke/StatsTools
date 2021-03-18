@@ -15,7 +15,7 @@ vignette: >
 <style type="text/css">
 /* Whole document: */
 body{
-  font-family: Cambria, Georgia, Palatino, serif;
+  font-family: "Palatino Linotype", "Book Antiqua", Palatino, serif;
   font-size: 12pt;
 }
 h1.title {
@@ -181,7 +181,7 @@ Both the training and CV mis-classification error are minimized where `k_nn = 1`
 
 To demonstrate the random forest cross-validation function, we will again use the `my_penguins` data. We will predict `body_mass_g` using  `bill_length_mm`, `bill_depth_mm`, and `flipper_length_mm` and iterate through `k = 2`, `k = 5`, and `k = 10` (where `k` is the number of folds in our cross-validation) 30 times each to analyze the spread of the average MSE (mean squared error) .
 
-```{r, cache = TRUE}
+```{r}
 reps <- 30
 k_vals <- c(2, 5, 10)
 # Create empty output dataframe
