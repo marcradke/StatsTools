@@ -19,7 +19,9 @@ Imports:
     randomForest,
     palmerpenguins,
     stats,
-    tidyr
+    tidyr,
+    ggplot2,
+    kableExtra
 Suggests: 
     testthat (>= 3.0.0),
     knitr,

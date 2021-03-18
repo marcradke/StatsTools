@@ -16,7 +16,7 @@ vignette: >
 /* Whole document: */
 body{
   font-family: Cambria, Georgia, Palatino, serif;
-  font-size: 14pt;
+  font-size: 12pt;
 }
 h1.title {
   font-size: 38px;
@@ -47,7 +47,7 @@ library(StatsTools)
 
 ## Introduction
 
-StatsTools is a package of statistics functions written as part of the STAT302 class at the University of Washington. It includes a t-test, a linear model, an implementation and cross-validation of the k-nearest neighbor algorithm, and cross-validation of a random forest algorithm applied to the `palmerpenguins` data.
+StatsTools is a package of statistics functions written as part of the STAT302 class at the University of Washington. It includes a t-test, a linear model, an implementation and cross-validation of the k-nearest neighbor algorithm, and cross-validation of a random forest algorithm applied to the `my_penguins` data.
 
 You can install from Github and load StatsTools with:
 
@@ -59,7 +59,7 @@ library(StatsTools)
 
 ## `my_t.test`
 
-We will use the `lifeExp` data from `my_gapminder` to demonstrate the t-test function.
+We will use the `lifeExp` data from `gapminder` to demonstrate the t-test function.
 
 First, we will test the hypothesis 
   \begin{align}
@@ -105,12 +105,12 @@ With $\alpha = 0.05$, we fail to reject our null hypothesis and find no evidence
 To demonstrate the linear model function, we will again use data from `my_gapminder` and fit a linear model of the form `lifeExp ~ gdpPercap + continent`.
 
 ```{r, warning = FALSE}
-# Fit linear model
+# Fit linear model and print output
 gap_lm <- my_lm(lifeExp ~ gdpPercap + continent, data = my_gapminder)
-gap_lm
+kableExtra::kable_styling(kableExtra::kable(gap_lm, digits = 150))
 ```
 
-An estimate of 0.00045 for the coefficient of `gdpPercap` means that, all other covariate being equal, a change of one unit in `gdpPercap` would change `lifeExp` by 0.00045. The table also gives us output of a hypothesis test with null hypothesis that the coefficient of `gdpPercap` is equal to zero and the alternativee hypothesis that it is not equal to zero. Using a p-value cutoff of $\alpha = 0.05$, we reject the null hypothesis and find evidence that the coefficient is not zero.
+An estimate of 0.00045 for the coefficient of `gdpPercap` means that, all other covariate being equal, a change of one unit in `gdpPercap` would change `lifeExp` by 0.00045. The table also gives us output of a hypothesis test with null hypothesis that the coefficient of `gdpPercap` is equal to zero and the alternative hypothesis that it is not equal to zero. Using a p-value cutoff of $\alpha = 0.05$, we reject the null hypothesis and find evidence that the coefficient is not zero.
 
 We can plot the actual and fitted values of `gdpPercap` to get a sense of our model fit:
 
@@ -128,14 +128,14 @@ avsf <- data.frame("fitted" = fitted,
                    "actual" = actual)
 # Plot Actual vs. Fitted
 avsfPlot <- ggplot(data = avsf, aes(y = actual, x = fitted)) +
-  geom_point(size = .75) +
+  geom_point(size = .9) +
   geom_abline(slope = 1, intercept = 0, lty = 2) + 
   labs(title = "Actual vs. Fitted",
        y = "Actual",
        x = "Fitted") +
   ylim(20, 85) +
   xlim(20,110) +
-  theme_gray(base_size = 14) +
+  #theme_gray(base_size = 14) +
   theme(plot.title = element_text(hjust = 0.5), 
         plot.margin = margin(0.5, 1, 0.5, 0.5, "cm"))
 avsfPlot
@@ -146,7 +146,35 @@ For a well-fit model, we would expect points around the line `y = x`. Our model 
 
 ## `my_knn_cv`
 
+To demonstrate the k-nearest neighbors package, we will use data from `my_penguins` and predict `species` using `bill_length_mm`, `bill_depth_mm`, `flipper_length_mm`, and `body_mass_g`. We will use 5-fold cross-validation and iterate from 1 to 10 k-nearest neighbors.
 
+```{r}
+# Load the my_penguins data
+data(my_penguins)
+# Remove entries missing data
+penguins <- my_penguins %>% tidyr::drop_na()
+# Create training data
+train <- penguins[,3:6]
+# Create true class vector
+cl <- penguins[,1]
+# Create empty results dataframe
+outpt <- data.frame("k_nn" = 1:10,
+                    "err_train" = rep(NA, 10),
+                    "err_cv" = rep(NA, 10))
+# Clean column display names
+colnames(outpt) <- c("k_nn", "Training Error", "CV Error")
+# Iterate through k_nn = 1:10
+for (i in 1:10) {
+  pred <- my_knn_cv(train, cl, k_nn = i, k_cv = 5)
+  # Record the training error
+  outpt[i,2] <- mean((1-(penguins$species == pred[[1]]))^2)
+  # Record the cross-validation error
+  outpt[i,3] <- pred[[2]]
+}
+# Output table
+kableExtra::kable_styling(kableExtra::kable(outpt))
+```
 
+Both the training and CV mis-classification error are minimized where `k_nn = 1`, and based solely on these metrics, a model where `k_nn = 1` would be chosen. However, such a model would predict the class of test data based solely on their proximity to single datapoints in the training data, rather than trying to detect some trend in the sample space. In practice, a model where `k_nn = 9` would be the best of these 10 because it has the next-lowest CV mis-classification error.
 
 ## `my_rf_cv`
